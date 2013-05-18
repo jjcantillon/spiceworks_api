@@ -58,10 +58,13 @@ $api_call[] = 'api/hotfixes.json';
 
 //We need to initiate a session and get the authenticity_token from the logon page before we can actually login.
 $curl = curl_init($url_root . 'login');
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($curl, CURLOPT_HEADER, true);
 curl_setopt($curl, CURLOPT_COOKIEJAR, $cookie_file);
-$loginPage = curl_exec($curl);
+if( ! $loginPage = curl_exec($curl)) {
+	trigger_error(curl_error($curl)); 
+}
 curl_close($curl);
 
 if($debugMode) {
@@ -99,6 +102,7 @@ if($debugMode) {
 
 //Initiate connection to Login page and send POST data
 $curl = curl_init($url_root . 'login');
+curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($curl, CURLOPT_POST, count($loginFields) + 1);
 curl_setopt($curl, CURLOPT_POSTFIELDS, $fields_string);
 curl_setopt($curl, CURLOPT_REFERER, $url_root . 'login');
@@ -118,6 +122,7 @@ if($debugMode) {
 //Stores each API request in an array
 foreach($api_call as $api_url) {
 	$curl = curl_init($url_root . $api_url);
+	curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); 
 	curl_setopt($curl, CURLOPT_COOKIEFILE, $cookie_file); 
 	$api_call_results[] = array(
